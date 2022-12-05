@@ -14,6 +14,10 @@ public class Board {
         return rows.get(row).getCols().get(col);
     }
 
+    public List<BoardRow> getRows() {
+        return rows;
+    }
+
     public void setFigures(int col, int row, Figure figure) {
         rows.get(row).getCols().set(col, figure);
     }
