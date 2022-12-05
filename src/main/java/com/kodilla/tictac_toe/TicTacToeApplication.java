@@ -19,10 +19,12 @@ public class TicTacToeApplication {
             valid = validateMove(move, board);
             if (!valid) {
                 System.out.println("This move is illegal. Try again.");
-                continue;}
+                continue;
+            }
+
+            board.setFigures(move.getCol() - 1, move.getRow() - 1, move.getFigure());
+            System.out.println(board);
         }
-        board.setFigures(move.getCol()-1, move.getRow()-1, move.getFigure());
-        System.out.println(board);
     }
 
     private static boolean validateMove(Move move, Board board) {
