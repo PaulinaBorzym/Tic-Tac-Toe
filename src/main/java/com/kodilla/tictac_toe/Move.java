@@ -1,9 +1,9 @@
 package com.kodilla.tictac_toe;
 
 public class Move {
-    private int col;
-    private int row;
-    private Figure figure;
+    private final int col;
+    private final int row;
+    private final Figure figure;
 
     public Move(int col, int row, Figure figure) {
         this.col = col;
