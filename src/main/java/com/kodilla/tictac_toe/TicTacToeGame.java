@@ -31,7 +31,7 @@ class TicTacToeGame {
         return board.getFigure(move.getCol() - 1, move.getRow() - 1) == Figure.NONE;
     }
 
-    private boolean isWinner(Board board) {
+    protected boolean isWinner(Board board) {
         return checkCols(board) || checkRows(board) || checkDiagonals(board);
     }
 
