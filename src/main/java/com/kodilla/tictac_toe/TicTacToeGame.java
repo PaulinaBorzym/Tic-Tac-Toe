@@ -1,5 +1,7 @@
 package com.kodilla.tictac_toe;
 
+import java.util.Scanner;
+
 class TicTacToeGame {
 
     public void playGame() {
@@ -7,8 +9,14 @@ class TicTacToeGame {
         System.out.println(board);
         boolean valid = false;
         Move move = null;
+        boolean isPlayingWithComputer = isPlayingWithComputer();
+        int countMoves = 1;
         while (!isWinner(board) && !checkFullBoard(board)) {
-            move = UserDialogs.getMove();
+            if(isPlayingWithComputer && countMoves%2 == 0){
+                move = ComputerDialogs.getComputerMove();
+            } else {
+                move = UserDialogs.getMove();
+            }
             valid = validateMove(move, board);
             if (!valid) {
                 System.out.println("This move is illegal. Try again.");
@@ -18,6 +26,7 @@ class TicTacToeGame {
 
             board.setFigures(move.getCol() - 1, move.getRow() - 1, move.getFigure());
             System.out.println(board);
+            countMoves ++;
         }
         if (isWinner(board)) {
             System.out.println("End the game. The winner is: " + move.getFigure());
@@ -98,5 +107,15 @@ class TicTacToeGame {
                 .filter(figure -> figure == Figure.NONE)
                 .findAny()
                 .isEmpty();
+    }
+    private boolean isPlayingWithComputer(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("If you want to play with computer press \"C\". " +
+                "\nIf you want to play with other user press other key");
+        String s = scanner.nextLine();
+        if(s.toUpperCase().equals("C")){
+            return true;
+        }
+        return false;
     }
 }
