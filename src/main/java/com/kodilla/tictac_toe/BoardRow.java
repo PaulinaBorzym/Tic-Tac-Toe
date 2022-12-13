@@ -7,10 +7,15 @@ public class BoardRow {
 
     private final List<Figure> cols = new ArrayList<>();
 
-    public BoardRow() {
-        for (int n = 0; n < 3; n++)
-            cols.add(Figure.NONE);
-    }
+    public BoardRow(boolean isPlaying3X3) {
+        if(isPlaying3X3) {
+            for (int n = 0; n < 3; n++)
+                cols.add(Figure.NONE);
+        }else {
+            for (int n = 0; n < 10; n++)
+                cols.add(Figure.NONE);
+        }
+        }
 
     public List<Figure> getCols() {
         return cols;

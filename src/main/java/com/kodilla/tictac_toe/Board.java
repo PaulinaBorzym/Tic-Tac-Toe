@@ -7,9 +7,14 @@ public class Board {
 
     private final List<BoardRow> rows = new ArrayList<>();
 
-    public Board() {
-        for (int n = 0; n < 3; n++)
-            rows.add(new BoardRow());
+    public Board(boolean isPlaying3X3) {
+        if(isPlaying3X3) {
+            for (int n = 0; n < 3; n++)
+                rows.add(new BoardRow(isPlaying3X3));
+        } else {
+            for (int n = 0; n < 10; n++)
+                rows.add(new BoardRow(isPlaying3X3));
+        }
     }
 
     public Figure getFigure(int col, int row) {
@@ -26,11 +31,18 @@ public class Board {
 
     @Override
     public String toString() {
-        StringBuilder s = new StringBuilder("|---|---|---|\n");
+        StringBuilder s = new StringBuilder(drawBoarder());
         for (BoardRow boardRow : rows) {
             s.append(boardRow.toString());
         }
-        s.append("|---|---|---|\n");
+        s.append(drawBoarder());
         return s.toString();
+    }
+    private String drawBoarder(){
+        String boarder = "|";
+        for(BoardRow boardRow : rows){
+            boarder = boarder + "---|";
+        }
+        return boarder+"\n";
     }
 }

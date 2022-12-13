@@ -5,17 +5,18 @@ import java.util.Scanner;
 class TicTacToeGame {
 
     public void playGame() {
-        Board board = new Board();
+        boolean isPlaying3X3 = isPlaying3X3();
+        Board board = new Board(isPlaying3X3);
         System.out.println(board);
         boolean valid = false;
         Move move = null;
         boolean isPlayingWithComputer = isPlayingWithComputer();
         int countMoves = 1;
-        while (!isWinner(board) && !checkFullBoard(board)) {
+        while (!isWinner(board, isPlaying3X3) && !checkFullBoard(board)) {
             if(isPlayingWithComputer && countMoves%2 == 0){
-                move = ComputerDialogs.getComputerMove();
+                move = ComputerDialogs.getComputerMove(isPlaying3X3);
             } else {
-                move = UserDialogs.getMove();
+                move = UserDialogs.getMove(board);
             }
             valid = validateMove(move, board);
             if (!valid) {
@@ -28,7 +29,7 @@ class TicTacToeGame {
             System.out.println(board);
             countMoves ++;
         }
-        if (isWinner(board)) {
+        if (isWinner(board, isPlaying3X3)) {
             System.out.println("End the game. The winner is: " + move.getFigure());
         }
         if (checkFullBoard(board)) {
@@ -40,8 +41,11 @@ class TicTacToeGame {
         return board.getFigure(move.getCol() - 1, move.getRow() - 1) == Figure.NONE;
     }
 
-    protected boolean isWinner(Board board) {
-        return checkCols(board) || checkRows(board) || checkDiagonals(board);
+    protected boolean isWinner(Board board, boolean isPlaying3X3) {
+        if(isPlaying3X3) {
+            return checkCols(board) || checkRows(board) || checkDiagonals(board);
+        }
+        return checkCols10X10(board) || checkRows10X10(board) ;//|| checkDiagonals10X10(board);
     }
 
     private boolean checkCols(Board board) {
@@ -117,5 +121,119 @@ class TicTacToeGame {
             return true;
         }
         return false;
+    }
+    private boolean isPlaying3X3(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("If you want to play version 3X3 press \"3\"." +
+                "\nIf you want to play version 10X10 press \"10\"");
+        String s = scanner.nextLine();
+        if(s.equals("3")) {
+            return true;
+        }
+        return false;
+        }
+
+    private boolean checkCols10X10(Board board) {
+        for (int col = 0; col < 10; col++) {
+            if (checkCol10X10(board, col)) return true;
+        }
+        return false;
+    }
+    private boolean checkCol10X10(Board board, int col) {
+        boolean allO = false;
+        boolean allX = false;
+        int countO = 0;
+        int countX = 0;
+        for (int row = 0; row < board.getRows().size(); row++) {
+            if (board.getFigure(col, row) == Figure.O){
+                countO++;
+                if (countO == 5)
+                    allO = true;
+                if(board.getFigure(col, row) == Figure.X || (board.getFigure(col, row) == Figure.NONE ))
+                    countO = 0;
+               }
+            if (board.getFigure(col, row) == Figure.X){
+                countX ++;
+                if(board.getFigure(col,row) == Figure.O || (board.getFigure(col, row) == Figure.NONE ))
+                    countX = 0;
+                if (countX == 5)
+                allX = true;
+            }
+        }
+        return allO || allX;
+    }
+    private boolean checkRows10X10(Board board) {
+        for (int row = 0; row < 10; row++) {
+            if (checkRow10X10(board, row))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean checkRow10X10(Board board, int row) {
+        boolean allO = false;
+        boolean allX = false;
+        int countO = 0;
+        int countX = 0;
+        for (int col = 0; col < board.getRows().size(); col++) {
+            if (board.getFigure(col, row) == Figure.O) {
+                countO++;
+                if (countO == 5)
+                    allO = true;
+                if (board.getFigure(col, row) == Figure.X || (board.getFigure(col, row) == Figure.NONE))
+                    countO = 0;
+            }
+            if (board.getFigure(col, row) == Figure.X) {
+                countX++;
+                if (board.getFigure(col, row) == Figure.O || (board.getFigure(col, row) == Figure.NONE))
+                    countX = 0;
+                if (countX == 5)
+                    allX = true;
+            }
+        }
+        return allO || allX;
+    }
+    private boolean checkDiagonals10X10(Board board) {
+        boolean allDownX = false;
+        boolean allUpX = false;
+        boolean allDownO = false;
+        boolean allUpO = false;
+        int countO = 0;
+        int countX = 0;
+        for (int n = 0; n < board.getRows().size(); n++) {
+            if (board.getFigure(n, n) == Figure.O){
+                countO++;
+                countX = 0;
+                if(countO == 5)
+                    allDownO = true;
+            }
+            if (board.getFigure(n, n) == Figure.X) {
+                countX++;
+                countO = 0;
+                if(countX == 5)
+                    allDownX = true;
+            }
+            if (board.getFigure(n, n) == Figure.NONE) {
+                countX = 0;
+                countO = 0;
+            }
+            if (board.getFigure(n, board.getRows().size() - n - 1) == Figure.O){
+                countO++;
+                countX = 0;
+                if(countO == 5)
+                    allUpO = true;
+            }
+            if (board.getFigure(n, board.getRows().size() - n - 1) == Figure.X) {
+                countX++;
+                countO = 0;
+                if (countX == 5)
+                    allUpX = true;
+            }
+            if (board.getFigure(n,board.getRows().size() - n - 1) == Figure.NONE){
+                countX = 0;
+                countO = 0;
+            }
+        }
+        return allDownO || allDownX || allUpO || allUpX;
     }
 }
