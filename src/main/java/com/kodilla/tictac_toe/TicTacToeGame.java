@@ -2,6 +2,8 @@ package com.kodilla.tictac_toe;
 
 import java.util.Scanner;
 
+import static java.lang.Math.abs;
+
 class TicTacToeGame {
 
     public void playGame() {
@@ -45,7 +47,7 @@ class TicTacToeGame {
         if(isPlaying3X3) {
             return checkCols(board) || checkRows(board) || checkDiagonals(board);
         }
-        return checkCols10X10(board) || checkRows10X10(board) ;//|| checkDiagonals10X10(board);
+        return checkCols10X10(board) || checkRows10X10(board) || checkDiagonals10X10(board);
     }
 
     private boolean checkCols(Board board) {
@@ -194,46 +196,39 @@ class TicTacToeGame {
         return allO || allX;
     }
     private boolean checkDiagonals10X10(Board board) {
-        boolean allDownX = false;
-        boolean allUpX = false;
-        boolean allDownO = false;
-        boolean allUpO = false;
-        int countO = 0;
-        int countX = 0;
-        for (int n = 0; n < board.getRows().size(); n++) {
-            if (board.getFigure(n, n) == Figure.O){
-                countO++;
-                countX = 0;
-                if(countO == 5)
-                    allDownO = true;
+        if (board.getRows().size() > 5) {
+            for (int colStart = 0; colStart < board.getRows().size() - 5 + 1; colStart++) {
+                for (int rowStart = 0; rowStart < board.getRows().size() - 5 + 1; rowStart++) {
+                    if (checkOneRightSubDiagonal(colStart, rowStart, board))
+                        return true;
+                }
             }
-            if (board.getFigure(n, n) == Figure.X) {
-                countX++;
-                countO = 0;
-                if(countX == 5)
-                    allDownX = true;
-            }
-            if (board.getFigure(n, n) == Figure.NONE) {
-                countX = 0;
-                countO = 0;
-            }
-            if (board.getFigure(n, board.getRows().size() - n - 1) == Figure.O){
-                countO++;
-                countX = 0;
-                if(countO == 5)
-                    allUpO = true;
-            }
-            if (board.getFigure(n, board.getRows().size() - n - 1) == Figure.X) {
-                countX++;
-                countO = 0;
-                if (countX == 5)
-                    allUpX = true;
-            }
-            if (board.getFigure(n,board.getRows().size() - n - 1) == Figure.NONE){
-                countX = 0;
-                countO = 0;
+            for (int colStart = board.getRows().size() - 5 - 1; colStart < board.getRows().size() - 1; colStart++) {
+                for (int rowStart = 0; rowStart < board.getRows().size() - 5 + 1; rowStart++) {
+                    if (checkOneLeftSubDiagonal(colStart, rowStart, board))
+                        return true;
+                }
             }
         }
-        return allDownO || allDownX || allUpO || allUpX;
+            return false;
     }
-}
+            private boolean checkOneRightSubDiagonal ( int col, int row, Board board){
+                boolean resultX = true;
+                boolean resultO = true;
+                for (int n = 0; n < 5; n++) {
+                    resultX = resultX && (board.getFigure(col + n, row + n) == Figure.X);
+                    resultO = resultO && (board.getFigure(col + n, row + n) == Figure.O);
+                }
+                return resultX || resultO;
+            }
+            private boolean checkOneLeftSubDiagonal ( int col, int row, Board board){
+                boolean resultX = true;
+                boolean resultO = true;
+                for (int n = 0; n > -5; n--) {
+                    resultX = resultX && (board.getFigure(col + n, row + abs(n)) == Figure.X);
+                    resultO = resultO && (board.getFigure(col + n, row + abs(n)) == Figure.O);
+                }
+                return resultX || resultO;
+            }
+        }
+
